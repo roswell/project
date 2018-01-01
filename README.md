@@ -83,6 +83,7 @@ cl
 
 ### currently supported commands
 
+```
 ros package file export -a/-d symbol*
 ros package file nicknames -a/-d symbol*
 ros package file shadow -a/-d symbol*
@@ -90,3 +91,4 @@ ros package file use -a/-d symbol*
 
 ros project add file*
 ros project depends-on -a/-d symbol*
+```
