@@ -85,9 +85,13 @@ cl
 
 ```
 ros package file export -a/-d symbol*
-ros package file nicknames -a/-d symbol*
+ros package file nicknames -a/-d package*
 ros package file shadow -a/-d symbol*
-ros package file use -a/-d symbol*
+ros package file use -a/-d package*
+ros package file import-from -a/-d package*
+ros package file import-from package -a/-d symbol*
+ros package file shadowing-import-from -a/-d package*
+ros package file shadowing-import-from package -a/-d symbol*
 
 ros project add file*
 ros project depends-on -a/-d symbol*

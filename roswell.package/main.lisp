@@ -1,6 +1,6 @@
 (uiop/package:define-package :roswell.package/main
                              (:nicknames :roswell.package) (:use :cl) (:shadow)
-                             (:export :combine-main :load-package
+                             (:export :import-main :combine-main :load-package
                               :normalize-package :save-package)
                              (:intern))
 (in-package :roswell.package/main)
@@ -34,7 +34,13 @@
            (shadow-import (collect :shadowing-import-from))
            (import (collect :import-from))
            (export (combine :export))
-           (intern (combine :intern)))
+           (intern (combine :intern))
+           ;;uiop not implemented.
+           ;;recycle
+           ;;mix
+           ;;reexport
+           ;;unintern
+           )
       (dolist (i '(:name :nicknames :documentation :use :shadow
                    :shadowing-import-from :import-from :export :intern))
         (setf package (remove i package :test 'equal :key #'first)))
@@ -70,16 +76,63 @@
       (let ((package (normalize-package (load-package (first r)))))
         (cond ((null (rest r))
                (format t "~{~(~A~%~)~}" (cdr (assoc key package))))
-              ((find (second r) '("-a" "add") :test 'equal)
+              ((equal (second r) "-a")
                (let ((elts (cdr (assoc key package))))
                  (dolist (i (nthcdr 2 r))
                    (pushnew (read-from-string (format nil ":~A" i)) elts))
                  (setf (cdr (assoc key package)) elts)
                  (save-package package (first r))
                  ))
-              ((find (second r) '("-d" "rm") :test 'equal)
+              ((equal (second r) "-d")
                (let ((elts (cdr (assoc key package))))
                  (dolist (i (nthcdr 2 r))
                    (setf elts (remove (read-from-string (format nil ":~A" i)) elts)))
                  (setf (cdr (assoc key package)) elts)
                  (save-package package (first r))))))))
+
+(defun import-main (r key)
+  (if (and (first r)
+           (probe-file (first r)))
+      (let* ((package (normalize-package (load-package (first r))))
+             (imports (remove key package
+                              :test (complement #'eql)
+                              :key #'first))
+             (imports- (remove key package
+                               :test #'eql
+                               :key #'first)))
+        (cond ((null (rest r))
+               (loop for i in imports
+                  do (format t "~(~A~%~{  ~A~%~}~)" (second i) (cddr i))))
+              ((equal (second r) "-a")
+               (dolist (i (nthcdr 2 r))
+                 (pushnew (list key (read-from-string (format nil ":~A" i)))
+                          imports :key #'second))
+               (save-package (normalize-package (append imports- imports)) (first r)))
+              ((equal (second r) "-d")
+               (dolist (i (nthcdr 2 r))
+                 (setf imports (remove (read-from-string (format nil ":~A" i))
+                                       imports :key #'second)))
+               
+               (save-package (normalize-package (append imports- imports)) (first r)))
+              ((equal (third r) "-a")
+               (loop with found = (find (read-from-string (format nil ":~A" (second r)))
+                                        imports :key #'second)
+                  with result = (cddr found)
+                  for i in (nthcdr 3 r)
+                  do (pushnew (read-from-string (format nil ":~A" i)) result)
+                  finally
+                    (setf (cddr found) result)
+                    (save-package (normalize-package (append imports- imports)) (first r))))
+              ((equal (third r) "-d")
+               (loop with found = (find (read-from-string (format nil ":~A" (second r)))
+                                        imports :key #'second)
+                  with result = (cddr found)
+                  for i in (nthcdr 3 r)
+                  do (setf result (remove (read-from-string (format nil ":~A" i)) result))
+                  finally
+                    (setf (cddr found) result)
+                    (save-package (normalize-package (append imports- imports)) (first r))))
+              ((second r)
+               (let ((i (find (read-from-string (format nil ":~A" (second r)))
+                                  imports :key #'second)))
+                 (format t "~(~A~%~{  ~A~%~}~)" (second i) (cddr i))))))))
