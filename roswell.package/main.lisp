@@ -1,6 +1,7 @@
 (uiop/package:define-package :roswell.package/main
                              (:nicknames :roswell.package) (:use :cl) (:shadow)
-                             (:export :load-package :normalize-package :save-package)
+                             (:export :combine-main :load-package
+                              :normalize-package :save-package)
                              (:intern))
 (in-package :roswell.package/main)
 ;;don't edit above
@@ -62,3 +63,23 @@
                 `(uiop/package:define-package ,(second (first package)) ,@(cdr package))
                 `(in-package ,(second (first package)))
                 seq)))))
+
+(defun combine-main (r key)
+  (if (and (first r)
+           (probe-file (first r)))
+      (let ((package (normalize-package (load-package (first r)))))
+        (cond ((null (rest r))
+               (format t "~{~(~A~%~)~}" (cdr (assoc key package))))
+              ((find (second r) '("-a" "add") :test 'equal)
+               (let ((elts (cdr (assoc key package))))
+                 (dolist (i (nthcdr 2 r))
+                   (pushnew (read-from-string (format nil ":~A" i)) elts))
+                 (setf (cdr (assoc key package)) elts)
+                 (save-package package (first r))
+                 ))
+              ((find (second r) '("-d" "rm") :test 'equal)
+               (let ((elts (cdr (assoc key package))))
+                 (dolist (i (nthcdr 2 r))
+                   (setf elts (remove (read-from-string (format nil ":~A" i)) elts)))
+                 (setf (cdr (assoc key package)) elts)
+                 (save-package package (first r))))))))
