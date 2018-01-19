@@ -7,6 +7,7 @@
 (defun help (&rest r)
   (format t "Usage:
 
+ros init project new-project
 ros project add file*
 ros project depends-on -a/-d symbol*
 
