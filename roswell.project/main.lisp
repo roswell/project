@@ -40,7 +40,7 @@
                            :direction :output
                            :if-exists :supersede)
         (let* ((*package* (find-package :roswell.project/main)))
-          (format out ";;don't edit~%~(~S~)"
+          (format out ";;don't edit~%~S"
                   `(defsystem ,name
                      ,@asd))))))
   asd)

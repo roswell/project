@@ -10,6 +10,8 @@
 ros init project new-project
 ros project add file*
 ros project depends-on -a/-d symbol*
+ros project author -a/-d name
+ros project mailto -a/-d email
 
 See also:
 `ros package`
