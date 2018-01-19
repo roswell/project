@@ -13,8 +13,6 @@ exec ros +R -Q -m roswell -N roswell -- $0 "$@"
 (in-package :ros.script.ros-package.3723494331)
 
 (defun main (&rest argv)
-  (if argv
-      (funcall (roswell.util:module "package" (second argv))
-               (cons (first argv) (cddr argv)))
-      (format t "ros package file [use/nickname] [add/rm] ...~%")))
+  (funcall (roswell.util:module "package" (or (second argv) "help"))
+           (cons (first argv) (cddr argv))))
 ;;; vim: set ft=lisp lisp:
