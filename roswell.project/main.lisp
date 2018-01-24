@@ -1,6 +1,6 @@
 (uiop/package:define-package :roswell.project/main
                              (:nicknames :roswell.project) (:use :cl)
-                             (:shadow) (:export :find-asd :asd :ensure-defpackage) (:intern))
+                             (:shadow) (:export :find-asd :asd :ensure-defpackage :author :email) (:intern))
 (in-package :roswell.project/main)
 ;;don't edit above
 (defun find-asd (dir)
@@ -65,3 +65,19 @@
                        (:use :cl))
                   `(in-package ,package)
                   content))))))
+
+(defun author ()
+  (remove #\Newline
+          (or (ignore-errors (getf (asd (find-asd *default-pathname-defaults*)) :author))
+              (ignore-errors (uiop:run-program "git config --global --get user.name" :output :string))
+              (ignore-errors (uiop:run-program "whoami" :output :string))
+              "Jane Roe")))
+
+(defun email ()
+  (remove #\Newline
+          (or
+           (ignore-errors (getf (asd (find-asd *default-pathname-defaults*)) :mailto))
+           (ignore-errors (uiop:run-program "git config --global --get user.email" :output :string))
+           (ignore-errors (uiop:run-program "echo $(whoami)@$(hostname)" :output :string))
+           "Jane.Roe@example.com")))
+
