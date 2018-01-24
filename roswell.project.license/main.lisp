@@ -25,4 +25,8 @@
                (format t "~A" license)
                (when (yes-or-no-p "generate ~A?~%" file)
                  (with-open-file (out file :direction :output)
-                   (format out "~A" license)))))))))
+                   (format out "~A" license))))))
+          (t
+           (format t "ros project license option~%~%License template choices:~%")
+           (dolist (path (directory (merge-pathnames "choices/*" (asdf:system-source-directory :roswell.project.license))))
+             (format t " ~A~%" (first (last (pathname-directory path)))))))))
