@@ -27,6 +27,7 @@
                  (with-open-file (out file :direction :output)
                    (format out "~A" license))))))
           (t
-           (format t "ros project license option~%~%License template choices:~%")
-           (dolist (path (directory (merge-pathnames "choices/*" (asdf:system-source-directory :roswell.project.license))))
+           (format t "ros project license template~%~%License template choices:~%")
+           (dolist (path (sort (directory (merge-pathnames "choices/*.*" (asdf:system-source-directory :roswell.project.license)))
+                               #'string< :key (lambda (x) (first (last (pathname-directory path))))))
              (format t " ~A~%" (first (last (pathname-directory path)))))))))
