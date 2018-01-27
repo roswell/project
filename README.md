@@ -95,4 +95,8 @@ ros package file shadowing-import-from package -a/-d symbol*
 
 ros project add file*
 ros project depends-on -a/-d symbol*
+ros project author -d/name
+ros project mailto -d/email
+ros project license -d/license
+ros project version -d/version
 ```

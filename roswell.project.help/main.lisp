@@ -13,6 +13,7 @@ ros project depends-on -a/-d symbol*
 ros project author -d/name
 ros project mailto -d/email
 ros project license -d/license
+ros project version -d/version
 
 See also:
 `ros package`
