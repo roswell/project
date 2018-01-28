@@ -1,7 +1,6 @@
 (uiop/package:define-package :roswell.package.help/main
                              (:nicknames :roswell.package.help)
-                             (:use :roswell.package :cl) (:shadow) (:export)
-                             (:intern))
+                             (:use :project :cl) (:shadow) (:export) (:intern))
 (in-package :roswell.package.help/main)
 ;;don't edit above
 

@@ -1,8 +1,9 @@
-(uiop/package:define-package :project/main (:nicknames :project :roswell.package) (:use :cl)
+(uiop/package:define-package :project/main (:nicknames :project) (:use :cl)
                              (:shadow)
                              (:export :find-asd :asd :ensure-defpackage :author
-                              :email :work-directory :pkg :project :import-main :combine-main :load-package
-                              :normalize-package :save-package)
+                              :email :work-directory :pkg :project :import-main
+                              :combine-main :load-package :normalize-package
+                              :save-package)
                              (:intern))
 (in-package :project/main)
 ;;don't edit above

@@ -1,4 +1,3 @@
 ;;don't edit
-(defsystem "roswell.package.shadowing-import-from" :depends-on
- (:roswell.package) :class :package-inferred-system :components
- ((:file "main")))
+(DEFSYSTEM "roswell.package.shadowing-import-from" :DEPENDS-ON (:PROJECT)
+ :CLASS :PACKAGE-INFERRED-SYSTEM :COMPONENTS ((:FILE "main")))

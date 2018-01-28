@@ -1,7 +1,7 @@
 (uiop/package:define-package :roswell.package.shadow/main
                              (:nicknames :roswell.package.shadow)
-                             (:use :roswell.package :cl) (:shadow :shadow)
-                             (:export) (:intern))
+                             (:use :project :cl) (:shadow :shadow) (:export)
+                             (:intern))
 (in-package :roswell.package.shadow/main)
 ;;don't edit above
 
