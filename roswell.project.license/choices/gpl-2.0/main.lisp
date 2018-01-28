@@ -1,6 +1,6 @@
 (uiop/package:define-package :roswell.project-license.gpl-2.0/main
                              (:nicknames :roswell.project-license.gpl-2.0)
-                             (:use :roswell.project :cl) (:shadow) (:export)
+                             (:use :project :cl) (:shadow) (:export)
                              (:intern))
 (in-package :roswell.project-license.gpl-2.0/main)
 ;;don't edit above

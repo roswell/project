@@ -1,6 +1,6 @@
 (uiop/package:define-package :roswell.project-license.unlicense/main
                              (:nicknames :roswell.project-license.unlicense)
-                             (:use :roswell.project :cl) (:shadow) (:export)
+                             (:use :project :cl) (:shadow) (:export)
                              (:intern))
 (in-package :roswell.project-license.unlicense/main)
 ;;don't edit above

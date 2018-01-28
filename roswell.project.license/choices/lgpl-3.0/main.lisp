@@ -1,6 +1,6 @@
 (uiop/package:define-package :roswell.project-license.lgpl-3.0/main
                              (:nicknames :roswell.project-license.lgpl-3.0)
-                             (:use :roswell.project :cl) (:shadow) (:export)
+                             (:use :project :cl) (:shadow) (:export)
                              (:intern))
 (in-package :roswell.project-license.lgpl-3.0/main)
 ;;don't edit above

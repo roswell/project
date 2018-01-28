@@ -1,7 +1,6 @@
 (uiop/package:define-package :roswell.project.mailto/main
                              (:nicknames :roswell.project.mailto)
-                             (:use :roswell.project :cl) (:shadow) (:export)
-                             (:intern))
+                             (:use :project :cl) (:shadow) (:export) (:intern))
 (in-package :roswell.project.mailto/main)
 ;;don't edit above
 

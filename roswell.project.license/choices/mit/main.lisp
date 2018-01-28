@@ -1,6 +1,6 @@
 (uiop/package:define-package :roswell.project-license.mit/main
                              (:nicknames :roswell.project-license.mit)
-                             (:use :roswell.project :cl) (:shadow) (:export)
+                             (:use :project :cl) (:shadow) (:export)
                              (:intern))
 (in-package :roswell.project-license.mit/main)
 ;;don't edit above

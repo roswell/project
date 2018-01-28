@@ -1,7 +1,6 @@
 (uiop/package:define-package :roswell.project.depends-on/main
                              (:nicknames :roswell.project.depends-on)
-                             (:use :roswell.project :cl) (:shadow) (:export)
-                             (:intern))
+                             (:use :project :cl) (:shadow) (:export) (:intern))
 (in-package :roswell.project.depends-on/main)
 ;;don't edit above
 

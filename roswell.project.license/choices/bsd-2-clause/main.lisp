@@ -1,6 +1,6 @@
 (uiop/package:define-package :roswell.project-license.bsd-2-clause/main
                              (:nicknames :roswell.project-license.bsd-2-clause)
-                             (:use :roswell.project :cl) (:shadow) (:export)
+                             (:use :project :cl) (:shadow) (:export)
                              (:intern))
 (in-package :roswell.project-license.bsd-2-clause/main)
 ;;don't edit above

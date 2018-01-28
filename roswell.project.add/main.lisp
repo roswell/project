@@ -1,7 +1,6 @@
 (uiop/package:define-package :roswell.project.add/main
                              (:nicknames :roswell.project.add)
-                             (:use :roswell.project :cl) (:shadow) (:export)
-                             (:intern))
+                             (:use :project :cl) (:shadow) (:export) (:intern))
 (in-package :roswell.project.add/main)
 ;;don't edit above
 (defvar *type-keyword-assoc*

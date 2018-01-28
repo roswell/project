@@ -1,5 +1,7 @@
-(uiop/package:define-package :project/main (:nicknames :project :roswell.project) (:use :cl)
-                             (:shadow) (:export :find-asd :asd :ensure-defpackage :author :email :work-directory :pkg :project)
+(uiop/package:define-package :project/main (:nicknames :project) (:use :cl)
+                             (:shadow)
+                             (:export :find-asd :asd :ensure-defpackage :author
+                              :email :work-directory :pkg :project)
                              (:intern))
 (in-package :project/main)
 ;;don't edit above
@@ -114,4 +116,3 @@
         (or (and path (uiop:directory-exists-p path))
             *work-directory*
             *default-pathname-defaults*)))
-
