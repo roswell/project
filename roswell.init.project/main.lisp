@@ -21,7 +21,7 @@
                 (format t "~&Successfully generated: ~A~%" path)
                 t))
       (format *error-output* "~&File already exists: ~A~%" path)
-      (roswell:quit 1))
+      (return-from prepare-project nil))
     t))
 
 (defun prepare-asd (name dir)
@@ -46,7 +46,7 @@
          (dir (format nil "~A/" (or (second params) name))))
     (when (probe-file dir)
       (format *error-output* "~&Directory already exists: ~A~%" dir)
-      (roswell:quit 1))
+      (return-from project nil))
     (ensure-directories-exist dir)
     (unless (and (ignore-errors (prepare-project name dir))
                  (prepare-asd name dir))
