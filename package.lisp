@@ -1,6 +1,6 @@
 (uiop/package:define-package :project/package (:use :cl) (:export :import-main
                               :combine-main :load-package :normalize-package
-                              :save-package))
+                              :save-package :safe-read-keyword))
 (in-package :project/package)
 ;;;don't edit above
 
@@ -69,6 +69,9 @@
                 `(in-package ,(second (first package)))
                 seq)))))
 
+(defun safe-read-keyword  (str)
+  (uiop:safe-read-from-string (format nil ":~A" str)))
+
 (defun combine-main (r key)
   (if (and (first r)
            (probe-file (first r)))
@@ -78,14 +81,14 @@
               ((equal (second r) "-a")
                (let ((elts (cdr (assoc key package))))
                  (dolist (i (nthcdr 2 r))
-                   (pushnew (read-from-string (format nil ":~A" i)) elts))
+                   (pushnew (safe-read-keyword i) elts))
                  (setf (cdr (assoc key package)) elts)
                  (save-package package (first r))
                  ))
               ((equal (second r) "-d")
                (let ((elts (cdr (assoc key package))))
                  (dolist (i (nthcdr 2 r))
-                   (setf elts (remove (read-from-string (format nil ":~A" i)) elts)))
+                   (setf elts (remove (safe-read-keyword i) elts)))
                  (setf (cdr (assoc key package)) elts)
                  (save-package package (first r))))))))
 
@@ -104,35 +107,35 @@
                   do (format t "~(~A~%~{  ~A~%~}~)" (second i) (cddr i))))
               ((equal (second r) "-a")
                (dolist (i (nthcdr 2 r))
-                 (pushnew (list key (read-from-string (format nil ":~A" i)))
+                 (pushnew (list key (safe-read-keyword i))
                           imports :key #'second))
                (save-package (normalize-package (append imports- imports)) (first r)))
               ((equal (second r) "-d")
                (dolist (i (nthcdr 2 r))
-                 (setf imports (remove (read-from-string (format nil ":~A" i))
+                 (setf imports (remove (safe-read-keyword i)
                                        imports :key #'second)))
                
                (save-package (normalize-package (append imports- imports)) (first r)))
               ((equal (third r) "-a")
-               (loop with found = (find (read-from-string (format nil ":~A" (second r)))
+               (loop with found = (find (safe-read-keyword (second r))
                                         imports :key #'second)
                   with result = (cddr found)
                   for i in (nthcdr 3 r)
-                  do (pushnew (read-from-string (format nil ":~A" i)) result)
+                  do (pushnew (safe-read-keyword i) result)
                   finally
                     (setf (cddr found) result)
                     (save-package (normalize-package (append imports- imports)) (first r))))
               ((equal (third r) "-d")
-               (loop with found = (find (read-from-string (format nil ":~A" (second r)))
+               (loop with found = (find (safe-read-keyword (second r))
                                         imports :key #'second)
                   with result = (cddr found)
                   for i in (nthcdr 3 r)
-                  do (setf result (remove (read-from-string (format nil ":~A" i)) result))
+                  do (setf result (remove (safe-read-keyword i) result))
                   finally
                     (setf (cddr found) result)
                     (save-package (normalize-package (append imports- imports)) (first r))))
               ((second r)
-               (let ((i (find (read-from-string (format nil ":~A" (second r)))
+               (let ((i (find (safe-read-keyword (second r))
                                   imports :key #'second)))
                  (format t "~(~A~%~{  ~A~%~}~)" (second i) (cddr i))))))))
 
