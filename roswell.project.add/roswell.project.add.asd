@@ -1,4 +1,3 @@
 ;;don't edit
-(defsystem "roswell.project.add" :class :package-inferred-system :components
-           ((:file "main"))
-           :depends-on (:roswell.project))
+(DEFSYSTEM "roswell.project.add" :CLASS :PACKAGE-INFERRED-SYSTEM :COMPONENTS
+ ((:FILE "main")) :DEPENDS-ON (:PROJECT))
