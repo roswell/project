@@ -1,3 +1,3 @@
 ;;don't edit
 (DEFSYSTEM "project" :CLASS :PACKAGE-INFERRED-SYSTEM :COMPONENTS
- ((:FILE "main")))
+ ((:FILE "system") (:FILE "package") (:FILE "main")))
