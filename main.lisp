@@ -1,7 +1,7 @@
-(uiop/package:define-package :roswell.project/main
-                             (:nicknames :roswell.project) (:use :cl)
-                             (:shadow) (:export :find-asd :asd :ensure-defpackage :author :email) (:intern))
-(in-package :roswell.project/main)
+(uiop/package:define-package :project/main (:nicknames :project :roswell.project) (:use :cl)
+                             (:shadow) (:export :find-asd :asd :ensure-defpackage :author :email :work-directory :pkg :project)
+                             (:intern))
+(in-package :project/main)
 ;;don't edit above
 (defun find-asd (dir)
   (let* ((prj (loop
@@ -24,7 +24,7 @@
   (when path
     (with-open-file (in path)
       (with-standard-io-syntax
-        (in-package :roswell.project/main)
+        (in-package :project/main)
         (let* ((*read-eval*)
                (asd (read in)))
           (assert (eql (first asd) 'defsystem))
@@ -39,7 +39,7 @@
       (with-open-file (out path
                            :direction :output
                            :if-exists :supersede)
-        (let* ((*package* (find-package :roswell.project/main)))
+        (let* ((*package* (find-package :project/main)))
           (format out ";;don't edit~%~S"
                   `(defsystem ,name
                      ,@asd))))))
@@ -80,4 +80,38 @@
            (ignore-errors (uiop:run-program "git config --global --get user.email" :output :string))
            (ignore-errors (uiop:run-program "echo $(whoami)@$(hostname)" :output :string))
            "Jane.Roe@example.com")))
+
+(defun module (prefix name)
+  "Load external system"
+  (and (loop for c across "/\\"
+             never (find c name))
+       (let ((imp (format nil "roswell.~A.~A" prefix name)))
+         (or #1=(ignore-errors
+                 (let (*read-eval*)
+                   (read-from-string (format nil "~A::~A" imp name))))
+             (progn
+               (uiop:symbol-call :ql :register-local-projects)
+               (or
+                (and (or (uiop:symbol-call :ql-dist :find-system imp)
+                         (uiop:symbol-call :ql :where-is-system imp))
+                     (uiop:symbol-call :ql :quickload imp :silent t)))
+               #1#)))))
+
+(defun project (&rest argv)
+  (setf argv (mapcar #'princ-to-string argv))
+  (funcall (module "project" (or (first argv) "info"))
+           (rest argv)))
+
+(defun pkg (&rest argv)
+  (setf argv (mapcar #'princ-to-string argv))
+  (funcall (module "package" (or (second argv) "help"))
+           (cons (first argv) (cddr argv))))
+
+(defvar *work-directory* nil)
+
+(defun work-directory (&optional path)
+  (setf *work-directory*
+        (or (and path (uiop:directory-exists-p path))
+            *work-directory*
+            *default-pathname-defaults*)))
 
