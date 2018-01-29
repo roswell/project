@@ -31,7 +31,7 @@
   "Load external system"
   (and (loop for c across "/\\"
              never (find c name))
-       (let ((imp (format nil "roswell.~A.~A" prefix name)))
+       (let ((imp (format nil "project.~A.~A" prefix name)))
          (or #1=(ignore-errors
                  (let (*read-eval*)
                    (read-from-string (format nil "~A::~A" imp name))))
