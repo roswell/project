@@ -28,16 +28,23 @@
       (with-standard-io-syntax
         (in-package :project/system)
         (let* ((*read-eval*)
-               (asd (read in)))
+               (asd (read in))
+               (rest (loop for exp = (read in nil nil)
+                        while exp
+                        collect exp)))
           (assert (eql (first asd) 'defsystem))
-          (cons :name (cdr asd)))))))
+          `(:name ,(second asd)
+                  ,@(cddr asd)
+                  :rest ,rest))))))
 
 (defun (setf asd) (asd path)
   (when path
     (let* ((asd (copy-list asd))
-           (name (getf asd :name)))
+           (name (getf asd :name))
+           (rest (getf asd :rest)))
       (assert name)
       (remf asd :name)
+      (remf asd :rest)
       (with-open-file (out path
                            :direction :output
                            :if-exists :supersede)
