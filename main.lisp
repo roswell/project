@@ -1,14 +1,14 @@
 (uiop/package:define-package :project/main (:nicknames :project) (:use :cl)
-                             (:shadow)
+                             (:shadow :package)
                              (:shadowing-import-from :project/package
                               :load-package :normalize-package :save-package
                               :combine-main :import-main)
-                             (:shadowing-import-from :project/system
-                              :find-asd :asd :ensure-defpackage)
-                             (:export :find-asd :asd :ensure-defpackage :author
-                              :email :work-directory :pkg :project :import-main
-                              :combine-main :load-package :normalize-package
-                              :save-package)
+                             (:shadowing-import-from :project/system :find-asd
+                              :asd :ensure-defpackage)
+                             (:export :package :find-asd :asd
+                              :ensure-defpackage :author :email :work-directory
+                              :project :import-main :combine-main :load-package
+                              :normalize-package :save-package)
                              (:intern))
 (in-package :project/main)
 ;;don't edit above
@@ -43,20 +43,28 @@
                      (uiop:symbol-call :ql :quickload imp :silent t)))
                #1#)))))
 
-(defun project (&rest argv)
-  (setf argv (mapcar #'princ-to-string argv))
-  (funcall (module "project" (or (first argv) "info"))
-           (rest argv)))
-
-(defun pkg (&rest argv)
-  (setf argv (mapcar #'princ-to-string argv))
-  (funcall (module "package" (or (second argv) "help"))
-           (cons (first argv) (cddr argv))))
-
 (defvar *work-directory* nil)
 
 (defun work-directory (&optional path)
   (setf *work-directory*
         (or (and path (uiop:directory-exists-p path))
+            (and path (uiop:file-exists-p path)
+                 (equal (pathname-type path) "asd")
+                 path)
+            (ignore-errors (asdf:system-source-file (asdf:find-system path)))
             *work-directory*
-            *default-pathname-defaults*)))
+            *default-pathname-defaults*))
+  (make-pathname :defaults *work-directory* :type nil :name nil))
+
+(defun project (&rest argv)
+  (setf argv (mapcar #'princ-to-string argv))
+  (let ((*default-pathname-defaults* (work-directory)))
+    (funcall (module "project" (or (first argv) "info"))
+             (rest argv))))
+
+(defun package (&rest argv)
+  (setf argv (mapcar #'princ-to-string argv))
+  (let ((*default-pathname-defaults* (work-directory)))
+    (funcall (module "package" (or (second argv) "help"))
+             (cons (first argv) (cddr argv)))))
+
