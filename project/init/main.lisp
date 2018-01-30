@@ -17,7 +17,7 @@
                                  :if-exists nil
                                  :if-does-not-exist :create)
               (when out
-                (let ((*package* (find-package :roswell.init.project)))
+                (let ((*package* (find-package :project.project.init/main)))
                   (format out ";;don't edit~%~(~S~)~%"
                           `(let ((data '(("asd" . ,(list name)))))
                              ,*loader*)))
