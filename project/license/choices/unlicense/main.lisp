@@ -1,6 +1,7 @@
 (uiop/package:define-package :project.project-license.unlicense/main
                              (:nicknames :project.project-license.unlicense)
                              (:use :project :cl) (:shadow) (:export)
+                             (:shadowing-import-from :project :package)
                              (:intern))
 (in-package :project.project-license.unlicense/main)
 ;;don't edit above

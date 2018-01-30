@@ -1,13 +1,13 @@
 (uiop/package:define-package :project.project.license/main
                              (:nicknames :project.project.license)
-                             (:use :project :cl) (:shadow) (:export) (:intern))
+                             (:use :project/system :cl) (:shadow) (:export) (:intern))
 (in-package :project.project.license/main)
 ;;don't edit above
 
 (defun license (r)
   (let* ((path (find-asd *default-pathname-defaults*))
          (asd (asd path))
-         (f (project.util:module "project-license" (first r)))
+         (f (uiop:symbol-call :project :module "project-license" (first r)))
          (license (when f
                     (apply f (rest r)))))
     (cond ((equal (first r) "-d")

@@ -1,6 +1,7 @@
 (uiop/package:define-package :project.project-license.lgpl-2.1/main
                              (:nicknames :project.project-license.lgpl-2.1)
                              (:use :project :cl) (:shadow) (:export)
+                             (:shadowing-import-from :project :package)
                              (:intern))
 (in-package :project.project-license.lgpl-2.1/main)
 ;;don't edit above

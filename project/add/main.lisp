@@ -1,6 +1,6 @@
 (uiop/package:define-package :project.project.add/main
                              (:nicknames :project.project.add)
-                             (:use :project :cl) (:shadow) (:export) (:intern))
+                             (:use :project/system :cl) (:shadow) (:export) (:intern))
 (in-package :project.project.add/main)
 ;;don't edit above
 (defvar *type-keyword-assoc*

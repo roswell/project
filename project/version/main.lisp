@@ -1,6 +1,6 @@
 (uiop/package:define-package :project.project.version/main
                              (:nicknames :project.project.version)
-                             (:use :project :cl) (:shadow) (:export) (:intern))
+                             (:use :project/system :cl) (:shadow) (:export) (:intern))
 (in-package :project.project.version/main)
 ;;don't edit above
 

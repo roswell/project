@@ -1,7 +1,8 @@
 (uiop/package:define-package :project.project-license.mit/main
                              (:nicknames :project.project-license.mit)
-                             (:use :project :cl) (:shadow) (:export)
-                             (:intern))
+                             (:use :project :cl) (:shadow)
+                             (:shadowing-import-from :project :package)
+                             (:export) (:intern))
 (in-package :project.project-license.mit/main)
 ;;don't edit above
 

@@ -1,6 +1,7 @@
 (uiop/package:define-package :project.project-license.mpl-2.0/main
                              (:nicknames :project.project-license.mpl-2.0)
                              (:use :project :cl) (:shadow) (:export)
+                             (:shadowing-import-from :project :package)
                              (:intern))
 (in-package :project.project-license.mpl-2.0/main)
 ;;don't edit above

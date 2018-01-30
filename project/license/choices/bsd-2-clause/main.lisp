@@ -1,6 +1,7 @@
 (uiop/package:define-package :project.project-license.bsd-2-clause/main
                              (:nicknames :project.project-license.bsd-2-clause)
                              (:use :project :cl) (:shadow) (:export)
+                             (:shadowing-import-from :project :package)
                              (:intern))
 (in-package :project.project-license.bsd-2-clause/main)
 ;;don't edit above

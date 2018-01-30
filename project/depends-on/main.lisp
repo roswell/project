@@ -1,6 +1,6 @@
 (uiop/package:define-package :project.project.depends-on/main
                              (:nicknames :project.project.depends-on)
-                             (:use :project :cl) (:shadow) (:export) (:intern))
+                             (:use :project/system :cl) (:shadow) (:export) (:intern))
 (in-package :project.project.depends-on/main)
 ;;don't edit above
 

@@ -1,6 +1,6 @@
 (uiop/package:define-package :project.project.mailto/main
                              (:nicknames :project.project.mailto)
-                             (:use :project :cl) (:shadow) (:export) (:intern))
+                             (:use :project/system :cl) (:shadow) (:export) (:intern))
 (in-package :project.project.mailto/main)
 ;;don't edit above
 

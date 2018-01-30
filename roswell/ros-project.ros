@@ -9,9 +9,9 @@ exec ros +R -Q -m roswell -N roswell -- $0 "$@"
   )
 
 (defpackage :ros.script.ros-project.3723305310
-  (:use :cl :project))
+  (:use :cl))
 (in-package :ros.script.ros-project.3723305310)
 
 (defun main (&rest argv)
-  (apply 'project argv))
+  (apply 'project:project argv))
 ;;; vim: set ft=lisp lisp:
