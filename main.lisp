@@ -5,13 +5,31 @@
                               :combine-main :import-main)
                              (:shadowing-import-from :project/system :find-asd
                               :asd :ensure-defpackage)
-                             (:export :package :find-asd :asd
+                             (:export :config :package :find-asd :asd
                               :ensure-defpackage :author :email :work-directory
                               :project :import-main :combine-main :load-package
                               :normalize-package :save-package)
                              (:intern))
 (in-package :project/main)
 ;;don't edit above
+(defvar *work-directory* nil)
+(defvar *config-path* (merge-pathnames ".roswell/project.cfg" (user-homedir-pathname)))
+(defvar *global* nil)
+
+(defun config (key)
+  (getf (uiop:safe-read-file-form (ensure-directories-exist *config-path*)) key))
+
+(defun (setf config) (val key)
+  (ensure-directories-exist *config-path*)
+  (let ((whole (uiop:safe-read-file-form (ensure-directories-exist *config-path*))))
+    (setf val (princ-to-string val)
+          (getf whole key) val)
+    (with-open-file (out *config-path*
+                         :if-exists :supersede
+                         :direction :output)
+      (prin1 whole out))
+    val))
+
 (defun author ()
   (remove #\Newline
           (or (ignore-errors (getf (asd (find-asd *default-pathname-defaults*)) :author))
@@ -43,7 +61,7 @@
                      (uiop:symbol-call :ql :quickload imp :silent t)))
                #1#)))))
 
-(defvar *work-directory* nil)
+
 
 (defun work-directory (&optional path)
   (setf *work-directory*
@@ -58,13 +76,21 @@
 
 (defun project (&rest argv)
   (setf argv (mapcar #'princ-to-string argv))
-  (let ((*default-pathname-defaults* (work-directory)))
+  (let (*global*
+        (*default-pathname-defaults* (work-directory)))
+    (when (equal (first argv) "--global")
+      (setf argv (cdr argv)
+            *global* t))
     (funcall (module "project" (or (first argv) "info"))
              (rest argv))))
 
 (defun package (&rest argv)
   (setf argv (mapcar #'princ-to-string argv))
-  (let ((*default-pathname-defaults* (work-directory)))
+  (let (*global*
+        (*default-pathname-defaults* (work-directory)))
+    (when (equal (first argv) "--global")
+      (setf argv (cdr argv)
+            *global* t))
     (funcall (module "package" (or (second argv) "help"))
              (cons (first argv) (cddr argv)))))
 
