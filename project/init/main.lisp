@@ -34,7 +34,10 @@
                              :if-exists nil
                              :if-does-not-exist :create)
           (when out
-            (format out ";;don't edit~%(defsystem ~S)" name)
+            (format out ";;don't edit~%~S"
+                    `(defsystem ,name
+                       :author ,(project/main:author)
+                       :mailto ,(project/main:email)))
             (format t "~&Successfully generated: ~A~%" path)
             t))
         (format *error-output* "~&File already exists?: ~A~%" path)
