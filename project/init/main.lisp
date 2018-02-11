@@ -33,13 +33,14 @@
                              :direction :output
                              :if-exists nil
                              :if-does-not-exist :create)
-          (when out
-            (format out ";;don't edit~%~S"
-                    `(defsystem ,name
-                       :author ,(project/main:author)
-                       :mailto ,(project/main:email)))
-            (format t "~&Successfully generated: ~A~%" path)
-            t))
+          (let ((*package* (find-package :project.project.init/main)))
+            (when out
+              (format out ";;don't edit~%~S"
+                      `(defsystem ,name
+                         :author ,(project/main:author)
+                         :mailto ,(project/main:email)))
+              (format t "~&Successfully generated: ~A~%" path)
+              t)))
         (format *error-output* "~&File already exists?: ~A~%" path)
         (probe-file path)
         (format *error-output* "~&Fail: ~A~%" path))))
