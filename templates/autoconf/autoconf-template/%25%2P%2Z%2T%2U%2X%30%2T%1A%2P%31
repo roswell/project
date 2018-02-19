@@ -1,0 +1,6 @@
+bin_SCRIPTS = roswell/{{name}}$(EXEEXT)
+
+%$(EXEEXT): %.ros
+	ros build $<
+
+CLEANFILES = ${bin_SCRIPTS}
