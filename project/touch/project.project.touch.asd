@@ -1,0 +1,3 @@
+;;don't edit
+(DEFSYSTEM "project.project.touch" :DEPENDS-ON (:PROJECT.PROJECT.ADD) :CLASS
+ :PACKAGE-INFERRED-SYSTEM :COMPONENTS ((:FILE "main")))
