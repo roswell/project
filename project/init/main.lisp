@@ -55,6 +55,8 @@
       (format *error-output* "~&Directory already exists: ~A~%" dir)
       (return-from init nil))
     (ensure-directories-exist dir)
+    (ensure-directories-exist (merge-pathnames "src/" dir))
+    (ensure-directories-exist (merge-pathnames "t/" dir))
     (unless (and (ignore-errors (prepare-project name dir))
                  (prepare-asd name dir))
       (let ((path (make-pathname :defaults "project" :type "lisp")))
