@@ -26,13 +26,13 @@
   (when path
     (with-open-file (in path)
       (with-standard-io-syntax
-        (in-package :project/system)
         (let* ((*read-eval*)
+               (*package* (find-package :asdf-user))
                (asd (read in))
                (rest (loop for exp = (read in nil nil)
                         while exp
                         collect exp)))
-          (assert (eql (first asd) 'defsystem))
+          (assert (eql (first asd) 'asdf:defsystem))
           `(:name ,(second asd)
                   ,@(cddr asd)
                   :rest ,rest))))))
@@ -49,9 +49,15 @@
                            :direction :output
                            :if-exists :supersede)
         (let* ((*package* (find-package :project/system)))
-          (format out ";;don't edit~%~S"
+          (format out ";;don't edit~%~S~%"
                   `(defsystem ,name
-                     ,@asd))))))
+                     ,@asd))
+          (format out "~{~S~^~%~}"
+                  (mapcar (lambda (x)
+                            (if (eql (first x) 'asdf:defsystem)
+                                `(defsysem ,@(rest x))
+                                x))
+                          rest))))))
   asd)
 
 (defun ensure-defpackage (name file)
