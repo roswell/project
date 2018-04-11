@@ -1,5 +1,5 @@
 (uiop/package:define-package :project/system (:use :cl)(:export :find-asd
-                              :asd :ensure-defpackage))
+                              :asd :ensure-defpackage :$))
 (in-package :project/system)
 ;;;don't edit above
 (defun find-asd (dir)
@@ -28,17 +28,20 @@
               (probe-file (make-pathname :defaults prj :name name :type "asd"))
               nil)))))
 
+(defun $ (name)
+  (intern (format nil "~A" name) (find-package :project/system)))
+
 (defun asd (path)
   (when path
     (with-open-file (in path)
       (with-standard-io-syntax
         (let* ((*read-eval*)
-               (*package* (find-package :asdf-user))
+               (*package* (find-package :project/system))
                (asd (read in))
                (rest (loop for exp = (read in nil nil)
                         while exp
                         collect exp)))
-          (assert (eql (first asd) 'asdf:defsystem))
+          (assert (eql (first asd) 'project/system::defsystem))
           `(:name ,(second asd)
                   ,@(cddr asd)
                   :rest ,rest))))))
@@ -70,7 +73,9 @@
   (let ((1stexp (with-open-file (in file)
                   (let (*read-eval*)
                     (ignore-errors (read in))))))
-    (unless (eql (first 1stexp) 'uiop:define-package)
+    (unless (and (consp 1stexp)
+                 (eql (first 1stexp)
+                      'uiop:define-package))
       (let* ((content (with-open-file (stream file)
                         (let ((seq (make-array (file-length stream)
                                                :element-type 'character
