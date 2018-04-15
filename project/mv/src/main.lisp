@@ -1,0 +1,32 @@
+(uiop/package:define-package :project.project.mv/src/main
+                             (:nicknames :project.project.mv) (:use :project.project.add :project.project.rm :project/system :cl)
+                             (:shadow) 
+                             (:import-from :project/system :find-asd) (:export) (:intern))
+(in-package :project.project.mv/src/main)
+;;don't edit above
+
+(defun mv-file (file1 file2 &optional asd asd-path)
+  (unless (setq file1 (probe-file file1))
+    (error "file not found ~A~%" file1))
+  (when (probe-file file2)
+    (error "file already exist  ~A~%" file2))
+  (let* ((asd-path (or asd-path (find-asd file1)))
+         (asd (or asd (asd asd-path)))
+         dir)
+    (unless asd-path
+      (error "can't find asd~%"))
+    (setf dir (make-pathname :defaults asd-path :type nil :name nil))
+    #+nil(print (list (getf asd :components)
+                 (format nil "~{~A/~}~A" (subseq (pathname-directory file1) (length (pathname-directory dir)))
+                         (pathname-name file1))
+                 (second (assoc (pathname-type file2) *type-keyword-assoc* :test 'equal))
+                 ))
+    (project.project.rm::rm (list (namestring file1)))
+    (uiop:rename-file-overwriting-target file1 file2)
+    (project.project.add::add (list (namestring file2)))
+    (values asd asd-path)))
+
+(defun mv (r &rest other)
+  (declare (ignorable other))
+  (mv-file (first r) (second r))
+  )
