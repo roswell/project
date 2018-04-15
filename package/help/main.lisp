@@ -13,7 +13,7 @@
                      (format t "~(~A~):~%" x)
                      (dolist (i (cdr (assoc x package)))
                        (format t "  ~(~A~)~%" i)))))
-            (mapc #'f '(:nicknames :use :shadow))))
+            (mapc #'f '(:name :nicknames :use :shadow))))
         (format t "Usage:
 
 ros package file export -a/-d symbol*
