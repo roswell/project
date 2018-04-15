@@ -4,9 +4,6 @@
                              (:export :add) (:intern))
 (in-package :project.project.add/main)
 ;;don't edit above
-(defvar *type-keyword-assoc*
-  '(("lisp" :file)))
-
 (defun components-insert (components path name type &optional processed)
   (setf components (copy-list components))
   (when path
