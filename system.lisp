@@ -1,7 +1,10 @@
 (uiop/package:define-package :project/system (:use :cl)(:export :find-asd
-                              :asd :ensure-defpackage :$))
+                              :asd :ensure-defpackage :$ :*type-keyword-assoc*))
 (in-package :project/system)
 ;;;don't edit above
+(defvar *type-keyword-assoc*
+  '(("lisp" :file)))
+
 (defun find-asd (dir)
   (let ((wd (symbol-value (uiop:find-symbol* :*work-directory* :project/main))))
     (if (ignore-errors (equal (pathname-type wd) "asd"))
@@ -76,12 +79,7 @@
     (unless (and (consp 1stexp)
                  (eql (first 1stexp)
                       'uiop:define-package))
-      (let* ((content (with-open-file (stream file)
-                        (let ((seq (make-array (file-length stream)
-                                               :element-type 'character
-                                               :fill-pointer t)))
-                          (setf (fill-pointer seq) (read-sequence seq stream))
-                          seq)))
+      (let* ((content (uiop:read-file-string file))
              (package (read-from-string (format nil ":~A" name))))
         (with-open-file (out file
                              :direction :output
@@ -90,4 +88,21 @@
                   `(uiop:define-package ,package
                        (:use :cl))
                   `(in-package ,package)
-                  content))))))
+                  content))))
+    (unless (eql (second 1stexp)
+                 (read-from-string (format nil ":~A" name)))
+      (let* ((content (uiop:read-file-lines file))
+             (package (read-from-string (format nil ":~A" name))))
+        (with-open-file (out file
+                             :direction :output
+                             :if-exists :supersede)
+          (format out "~(~S~%~S~%~);;;don't edit above~%"
+                  `(uiop:define-package ,package
+                       (:use :cl))
+                  `(in-package ,package))
+          (loop with write = nil
+             for line in content
+             when write
+             do (format out "~A~%" line)
+             when (equal ";;;don't edit above" line)
+             do (setf write t)))))))
