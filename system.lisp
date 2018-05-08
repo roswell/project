@@ -14,22 +14,19 @@
                                      :defaults dir
                                      :name "project"
                                      :type "lisp")
-                       :for asd := (make-pathname :defaults path :type "asd")
-                       :when (probe-file asd)
-                       :do (return-from find-asd asd)
                        :when (probe-file path)
                        :do (return path)
                        :when (equal (ignore-errors (pathname-directory (truename dir))) '(:absolute))
                        :do (return nil)
                        :do (setf dir (uiop:pathname-parent-directory-pathname dir))))
                (*read-eval*)
-               (name (when prj
-                       (with-open-file (in prj)
-                         (second (assoc "asd" (second (second (first (second (read in)))))
-                                        :test 'equal))))))
-          (if name
-              (probe-file (make-pathname :defaults prj :name name :type "asd"))
-              nil)))))
+               (prj/ (when prj (second (second (first (second (uiop:read-file-form prj)))))))
+               (name (when prj/ (second (assoc "asd" prj/ :test 'equal)))))
+          (values
+           (if name
+               (probe-file (make-pathname :defaults prj :name name :type "asd"))
+               nil)
+           prj/)))))
 
 (defun $ (name)
   (intern (format nil "~A" name) (find-package :project/system)))
