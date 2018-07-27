@@ -58,9 +58,14 @@
                            :direction :output
                            :if-exists :supersede)
         (let* ((*package* (find-package :project/system)))
-          (format out ";;don't edit~%~S~%"
-                  `(defsystem ,name
-                     ,@asd))
+          (format out ";;don't edit~%")
+          (format out "(defsystem ~S" name)
+          (loop for (key val) on asd by #'cddr
+                do (format out "~%  ~(~S~) ~A" key
+                           (cond ((keywordp val)
+                                  (format nil "~(~S~)" val))
+                                 (t (format nil "~S" val)))))
+          (format out ")~%")
           (format out "~{~S~^~%~}"
                   (mapcar (lambda (x)
                             (if (eql (first x) 'asdf:defsystem)
