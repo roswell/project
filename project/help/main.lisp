@@ -9,6 +9,8 @@
 
 ros project init new-project
 ros project add file*
+ros project touch file*
+ros project script file*
 ros project depends-on -a/-d symbol*
 ros project author -d/name
 ros project mailto -d/email
