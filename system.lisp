@@ -61,10 +61,16 @@
           (format out ";;don't edit~%")
           (format out "(defsystem ~S" name)
           (loop for (key val) on asd by #'cddr
-                do (format out "~%  ~(~S~) ~A" key
-                           (cond ((keywordp val)
-                                  (format nil "~(~S~)" val))
-                                 (t (format nil "~S" val)))))
+                for var = (format nil "~%  ~(~S~)" key)
+                do (format out "~A" var)
+                   (cond ((keywordp val)
+                          (format out " ~(~S~)" val))
+                         ((listp val)
+                          (format out "(~(~S~)" (first val))
+                          (dolist (i (rest val))
+                            (format out "~%~A~(~S~)" (make-string (length var) :initial-element #\Space) i))
+                          (format out ")"))
+                         (t (format out " ~S" val))))
           (format out ")~%")
           (format out "~{~S~^~%~}"
                   (mapcar (lambda (x)
