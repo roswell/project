@@ -1,6 +1,6 @@
 (uiop/package:define-package :project.project.add/main
                              (:nicknames :project.project.add)
-                             (:use :project/system :cl) (:shadow)
+                             (:use :project/system :project.project.touch/main :cl) (:shadow)
                              (:export :add) (:intern))
 (in-package :project.project.add/main)
 ;;don't edit above
@@ -30,15 +30,7 @@
            (subseq (pathname-directory file) (length (pathname-directory dir)))
            (pathname-name file)
            (second (assoc (pathname-type file) *type-keyword-assoc* :test 'equal))))
-    (let ((relative (subseq (pathname-directory file) (length (pathname-directory dir)))))
-      (when (equal (pathname-type file) "lisp")
-        (ensure-defpackage (format nil "~A/~{~A/~}~A"
-                                   (getf asd :name)
-                                   relative
-                                   (pathname-name file))
-                           file)))
-    (values asd asd-path)))
-
+    (touch-file file asd asd-path)))
 
 (defun add (r)
   (if r
