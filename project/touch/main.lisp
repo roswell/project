@@ -13,6 +13,10 @@
          dir)
     (unless asd-path
       (error "can't find asd~%"))
+    (unless (eql (getf asd :class)
+                 :package-inferred-system)
+      (setf (getf asd :class) :package-inferred-system
+            (asd asd-path) asd))
     (setf dir (make-pathname :defaults asd-path :type nil :name nil))
     (let ((relative (subseq (pathname-directory file) (length (pathname-directory dir)))))
       (when (equal (pathname-type file) "lisp")
