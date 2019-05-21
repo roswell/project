@@ -4,16 +4,15 @@
                              (:export :add) (:intern))
 (in-package :project.project.add/main)
 ;;don't edit above
-(defun components-insert (components path name type &optional processed)
+(defun components-insert (components path name system &optional processed)
   (setf components (copy-list components))
   (when path
-    (setf name (format nil "~{~A/~}~A" path name)))
+    (setf name (format nil "~A/~{~A/~}~A" system path name)))
   (if (find-if (lambda (x)
-                 (and (eql (first x) type)
-                      (equal (second x) name)))
+                 (equal x name))
                components)
       (error  "already exist ~A" name)
-      (cons (list type name) components)))
+      (cons name components)))
 
 (defun add-file (file &optional asd asd-path)
   (unless (setq file (probe-file file))
@@ -24,12 +23,12 @@
     (unless asd-path
       (error "can't find asd~%"))
     (setf dir (make-pathname :defaults asd-path :type nil :name nil))
-    (setf (getf asd :components)
+    (setf (getf asd :depends-on)
           (components-insert
-           (getf asd :components)
+           (getf asd :depends-on)
            (subseq (pathname-directory file) (length (pathname-directory dir)))
            (pathname-name file)
-           (second (assoc (pathname-type file) *type-keyword-assoc* :test 'equal))))
+           (getf asd :name)))
     (touch-file file asd asd-path)))
 
 (defun add (r)
