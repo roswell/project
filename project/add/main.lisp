@@ -6,8 +6,7 @@
 ;;don't edit above
 (defun components-insert (components path name system &optional processed)
   (setf components (copy-list components))
-  (when path
-    (setf name (format nil "~A/~{~A/~}~A" system path name)))
+  (setf name (format nil "~A/~{~A/~}~A" system path name))
   (if (find-if (lambda (x)
                  (equal x name))
                components)
